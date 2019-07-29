@@ -1,6 +1,10 @@
-$dirPath = "C:\Users\gnamestnik\Desktop\archives"
-$destPath = "C:\Users\gnamestnik\Desktop\unzipped"
+$dirPath = "E:\zip"
+$destPath = "E:\unzip"
 $filter = "*.zip"
+$zipFileTemplate = "-Backup"
+$unzippedFileExt = ".iha"
+$oldRename = "CCMPCSHIS01"
+$newRename = "CCH-MSPTHS01"
 
 $folders = get-childitem -path $dirPath | where-object {$_.Psiscontainer}
 $i=0
@@ -10,13 +14,19 @@ foreach ($d in $folders){
     foreach ($f in $files){
         #expanding archive
         Expand-Archive -LiteralPath $f.FullName -DestinationPath $destPath
-        #comptressing archive
-        #Compress-Archive -LiteralPath 'C:\Reference\Draft Doc.docx', 'C:\Reference\Images\Diagram [2].vsd'  -CompressionLevel Optimal -DestinationPath C:\Archives\Draft.Zip
+        
+        #rename alarms.dat file
         $alarmFile = $destPath+"\Alarms.dat"
         $newname   = $f.BaseName+"-Alarms.dat"
         if (Test-Path $alarmFile) {
              Rename-Item $alarmFile -NewName $newname
         }
+
+        #replace old name with new name
+        $unzippedFile = $destPath + "\" + $f.BaseName.Substring(0,$f.BaseName.IndexOf($zipFileTemplate)) + $unzippedFileExt
+        $newName = $unzippedFile -replace $oldRename, $newRename
+        Rename-Item $unzippedFile -NewName $newName
     }
     $i++
 }
+echo "Done"

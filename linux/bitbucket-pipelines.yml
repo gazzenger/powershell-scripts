@@ -1,0 +1,12 @@
+pipelines:
+  custom:
+    schedule-example:
+      - step:
+          script:
+            - ssh $ssh_username@$ssh_hostname bash -s - < $script_name $parameter1 $parameter2 ...
+  branches:
+    some-branch:
+      - step:
+          name: Some example pipeline
+          script:
+            - ssh $ssh_username@$ssh_hostname bash -s - < $script_name $parameter1 $parameter2 ...
